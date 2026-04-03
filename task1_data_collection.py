@@ -2,7 +2,7 @@
 TrendPulse - Task 1: Data Collection from HackerNews API
 
 Steps:
-1. Fetch top 500 story IDs
+1. Fetch top 1000 story IDs
 2. Fetch story details
 3. Categorize stories based on keywords
 4. Collect max 25 per category
