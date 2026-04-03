@@ -58,7 +58,7 @@ def fetch_top_story_ids():
     try:
         response = requests.get(TOP_STORIES_URL, headers=HEADERS)
         response.raise_for_status()
-        return response.json()[:500]  # First 500 IDs
+        return response.json()[:1000]  # First 500 IDs
     except Exception as e:
         print("Error fetching top stories:", e)
         return []
