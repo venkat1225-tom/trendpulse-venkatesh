@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from collections import Counter
-
+print("NEW VERSION RUNNING")
 # Load data
 df = pd.read_csv("cleaned_jobs.csv")
 
