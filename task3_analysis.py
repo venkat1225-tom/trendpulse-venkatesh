@@ -1,71 +1,86 @@
-Q: 3
-Task 3 — Analysis with Pandas & NumPy
-TrendPulse: What's Actually Trending Right Now
-Marks: 20 | File: task3_analysis.py
+"""
+TrendPulse - Task 3: Data Analysis using Pandas & NumPy
 
-Submission: Push your file to the same public GitHub repo and share the direct link: https://github.com/<username>/trendpulse-<name>/blob/main/task3_analysis.py
+This script:
+1. Loads cleaned CSV data from Task 2
+2. Performs analysis using Pandas and NumPy
+3. Adds new calculated columns
+4. Saves the updated dataset for visualization
 
-⚠️ Anti-AI Policy: Write your own code. Comments explaining your logic count in your favour.
+Author: Your Name
+"""
 
-Needs: data/trends_clean.csv from Task 2
+import pandas as pd
+import numpy as np
+import os
 
-What to Build
-Load the clean CSV from Task 2 and explore the data using Pandas and NumPy. Find patterns, compute statistics, and add a couple of new columns. Save the result as a new CSV for Task 4.
 
-Tasks
-1 — Load and Explore (4 marks)
-Load data/trends_clean.csv into a Pandas DataFrame
-Print the first 5 rows
-Print the shape of the DataFrame (rows and columns)
-Print the average score and average num_comments across all stories
-2 — Basic Analysis with NumPy (8 marks)
-Use NumPy to answer these questions and print the results:
+def main():
+    # -------------------------------
+    # Step 1: Load and Explore Data
+    # -------------------------------
+    file_path = "data/trends_clean.csv"
 
-What is the mean, median, and standard deviation of score?
-What is the highest score and lowest score?
-Which category has the most stories?
-Which story has the most comments? Print its title and comment count.
-3 — Add New Columns (5 marks)
-Add these two new columns to your DataFrame:
+    try:
+        df = pd.read_csv(file_path)
+        print(f"Loaded data: {df.shape}")
+    except Exception as e:
+        print("Error loading file:", e)
+        return
 
-Column	Formula
-engagement	num_comments / (score + 1) — how much discussion a story gets per upvote
-is_popular	True if score > average score, else False
-4 — Save the Result (3 marks)
-Save the updated DataFrame (with the 2 new columns) to data/trends_analysed.csv
-Print a confirmation message
-Expected Output
-Loaded data: (114, 7)
+    # Print first 5 rows
+    print("\nFirst 5 rows:")
+    print(df.head())
 
-First 5 rows:
-   post_id   title             category   score  num_comments ...
+    # Average values using Pandas
+    avg_score = df["score"].mean()
+    avg_comments = df["num_comments"].mean()
 
-Average score   : 12,450
-Average comments: 342
+    print(f"\nAverage score   : {avg_score:.2f}")
+    print(f"Average comments: {avg_comments:.2f}")
 
---- NumPy Stats ---
-Mean score   : 12,450
-Median score : 8,200
-Std deviation: 9,870
-Max score    : 87,432
-Min score    : 5
+    # -------------------------------
+    # Step 2: Analysis using NumPy
+    # -------------------------------
+    scores = df["score"].to_numpy()
 
-Most stories in: technology (22 stories)
+    print("\n--- NumPy Stats ---")
+    print(f"Mean score   : {np.mean(scores):.2f}")
+    print(f"Median score : {np.median(scores):.2f}")
+    print(f"Std deviation: {np.std(scores):.2f}")
+    print(f"Max score    : {np.max(scores)}")
+    print(f"Min score    : {np.min(scores)}")
 
-Most commented story: "AI model beats humans at coding"  — 4,891 comments
+    # Category with most stories
+    category_counts = df["category"].value_counts()
+    top_category = category_counts.idxmax()
+    top_count = category_counts.max()
 
-Saved to data/trends_analysed.csv
-Submission Checklist
- Script runs without errors
- NumPy used for at least mean, median, std
- engagement and is_popular columns added
- data/trends_analysed.csv saved
- Code is commented
-Marks Breakdown
-Description	Marks
-1	Load and explore the data	4
-2	NumPy statistics	8
-3	Add new columns	5
-4	Save to CSV	3
-Total	20
-Next: Task 4 will load this CSV and turn the numbers into charts.
+    print(f"\nMost stories in: {top_category} ({top_count} stories)")
+
+    # Story with most comments
+    max_comments_row = df.loc[df["num_comments"].idxmax()]
+    print(f"\nMost commented story:")
+    print(f"\"{max_comments_row['title']}\" — {max_comments_row['num_comments']} comments")
+
+    # -------------------------------
+    # Step 3: Add New Columns
+    # -------------------------------
+
+    # Engagement = comments per score
+    df["engagement"] = df["num_comments"] / (df["score"] + 1)
+
+    # Popular if score > average score
+    df["is_popular"] = df["score"] > avg_score
+
+    # -------------------------------
+    # Step 4: Save the Result
+    # -------------------------------
+    output_file = "data/trends_analysed.csv"
+    df.to_csv(output_file, index=False)
+
+    print(f"\nSaved to {output_file}")
+
+
+if __name__ == "__main__":
+    main()
